@@ -40,8 +40,8 @@ The goal is to pay as little as possible for [tokens](./llm.md#token) and [reque
 
 Therefore:
 
-- [choose a model](./llm.md#choose-a-model) that fits your [requirements](./requirements.md#what-are-requirements) and [constraints](./architecture.md#constraint).
-- give focused and actionable [prompts](./llm.md#prompts) that explain well what you want to achieve so that the agent doesn't spend tokens on irrelevant changes;
+- [choose a model](./llm.md#choose-a-model) that fits your [requirements](./requirements.md#what-are-requirements) and [constraints](./architecture.md).
+- give focused and actionable [prompts](./llm.md#prompt) that explain well what you want to achieve so that the agent doesn't spend tokens on irrelevant changes;
 - [set up the necessary context](./llm.md#context-engineering) that fits the [context window](./llm.md#context-window) of the underlying LLM.
 
 ## Choose and use a coding agent

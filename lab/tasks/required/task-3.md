@@ -180,7 +180,7 @@ Title: `[Task] Dashboard Front-end`
    2. Copy it to `frontend/.env`.
    3. Set `VITE_API_TARGET` to the URL of your back-end API, for example `http://<your-vm-ip-address>:42002`.
 
-      If you changed [`CADDY_PORT`](../../../wiki/dotenv-docker-secret.md#caddy_port) in [`.env.docker.secret`](../../../wiki/dotenv-docker-secret.md#what-is-envdockersecret), use your value instead of `42002`.
+      If you changed [`CADDY_HOST_PORT`](../../../wiki/dotenv-docker-secret.md#caddy_host_port) in [`.env.docker.secret`](../../../wiki/dotenv-docker-secret.md#what-is-envdockersecret), use your value instead of `42002`.
 
 3. To install dependencies and start the dev server,
 
@@ -250,7 +250,7 @@ Title: `[Task] Dashboard Front-end`
 
 4. Open in a browser: `http://<your-vm-ip-address>:42002`.
 
-   If you changed [`CADDY_PORT`](../../../wiki/dotenv-docker-secret.md#caddy_port) in [`.env.docker.secret`](../../../wiki/dotenv-docker-secret.md#what-is-envdockersecret), use your value instead of `42002`.
+   If you changed [`CADDY_HOST_PORT`](../../../wiki/dotenv-docker-secret.md#caddy_host_port) in [`.env.docker.secret`](../../../wiki/dotenv-docker-secret.md#what-is-envdockersecret), use your value instead of `42002`.
 
 5. Connect with your API key.
 6. Navigate to the Dashboard page.

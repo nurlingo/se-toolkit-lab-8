@@ -61,7 +61,7 @@ Steps:
 
 ## Get meeting report
 
-1. In `Claude`, use the skill `/get-meeting-report <N> <M>` to get a report at `meetings/week-<N>/meeting-<M>/meeting-report.md` following the rules in [`meeting-report-prompt.md`](./context/meeting-report/meeting-report-prompt.md).
+1. In `Claude`, use the skill `/get-meeting-report <N> <M>` to get a report at `meetings/week-<N>/meeting-<M>/meeting-report.md` following the rules in [`meeting-report.md`](../contributing/conventions/meeting-report.md).
 2. In `Claude`, use the skill `/review-meeting-report` to review the report against the transcript and other files discussed during the meeting.
 
 ## Enter the devshell

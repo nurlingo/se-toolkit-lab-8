@@ -85,9 +85,9 @@ Not applicable — setup files do not have acceptance criteria.
 
 1. Line 105 — Compound instruction: "Go to `VS Code Terminal`, check that the current directory is `se-toolkit-lab-5`, and install `Python` dependencies:" combines three actions in one step. Convention: "Never write 'Do A and do B.' Instead, split into two numbered steps."
 2. Line 195 — Sentence "e.g. ssh my-vm-user@10.93.1.1" does not end with a period.
-3. Line 197 — Sentence "If unable, see [how to connect to vm](../../wiki/vm.md#connect-to-the-vm)" does not end with a period.
+3. Line 197 — Sentence "If unable, see [how to connect to vm](../../../../wiki/vm.md#connect-to-the-vm)" does not end with a period.
 4. Line 309 — Sentence fragment "`nano .env.docker.secret`, then when done close it with `CLTR X`" does not end with a period.
-5. Line 350 — Sentence "read more here if interested: [AI coding agent setup](../../wiki/coding-agents.md)" does not end with a period.
+5. Line 350 — Sentence "read more here if interested: [AI coding agent setup](../../../../wiki/coding-agents.md)" does not end with a period.
 
 ### 4.2. Terminal commands
 
@@ -199,7 +199,7 @@ No issues found — all `docker compose up` commands include `--build`.
 
 ### 4.22. Environment variable references
 
-1. Line 179 — References [`API_KEY`](../../wiki/dotenv-docker-secret.md#api_key) from `.env.docker.secret` without wiki links. Convention requires linking to the variable's wiki section and the file's wiki section.
+1. Line 179 — References [`API_KEY`](../../../../wiki/dotenv-docker-secret.md#api_key) from `.env.docker.secret` without wiki links. Convention requires linking to the variable's wiki section and the file's wiki section.
 2. Line 306 — References `API_KEY` without wiki links (same violation).
 
 ### 4.23. Horizontal rules

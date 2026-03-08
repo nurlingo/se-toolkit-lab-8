@@ -368,7 +368,7 @@ The code stubs in `backend/app/etl.py` contain detailed TODOs.
 
 #### 1.4.6. Commit and push your work
 
-1. [Commit](../../../wiki/git-workflow.md#commit) your changes.
+1. [Commit](../../../wiki/git-workflow.md#commit-changes) your changes.
 
    Use this commit message:
 
@@ -417,7 +417,7 @@ The code stubs in `backend/app/etl.py` contain detailed TODOs.
 
 ### 1.5. Finish the task
 
-1. [Create a PR](../../../wiki/git-workflow.md#create-a-pr) with your changes.
+1. [Create a PR](../../../wiki/git-workflow.md#create-a-pr-to-the-main-branch-in-your-fork) with your changes.
 2. [Get a PR review](../../../wiki/git-workflow.md#get-a-pr-review) and complete the subsequent steps in the `Git workflow`.
 
 ### 1.6. Check the task using the autochecker

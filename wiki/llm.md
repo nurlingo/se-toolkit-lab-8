@@ -29,7 +29,7 @@ Docs:
 
 A model is a specific trained version of an [LLM](#llm), identified by a name (e.g., `Qwen3-Coder`, `claude-sonnet-4-6`).
 
-Different models vary in capability, speed, and cost. [Coding agents](./coding-agents.md#choose-a-coding-agent) let you choose which model to use.
+Different models vary in capability, speed, and cost. [Coding agents](./coding-agents.md#choose-and-use-a-coding-agent) let you choose which model to use.
 
 ### Choose a model
 

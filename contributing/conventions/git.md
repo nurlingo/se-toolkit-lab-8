@@ -2,4 +2,4 @@
 
 ## Line endings
 
-We enforce `LF` line endings via [`.gitattributes`](../../../.gitattributes).
+We enforce `LF` line endings via [`.gitattributes`](../../.gitattributes).

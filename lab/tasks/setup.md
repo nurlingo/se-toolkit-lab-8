@@ -242,7 +242,7 @@ If you can't [connect to your VM](../../wiki/vm.md#connect-to-the-vm), complete 
 
 ### 1.10. (UPD) Set up `Node.js`
 
-1. [Set up `Node.js`](../../wiki/nodejs.md#set-up-nodejs-in-vs-code).
+1. [Set up `Node.js`](../../wiki/nodejs.md#install-nodejs).
 
    **Note:** you've already opened the project directory.
 
@@ -419,8 +419,8 @@ A coding agent can help you write code, explain concepts, and debug issues.
   <img alt="Qwen response" src="../images/tasks/setup/qwen-response.png" style="width:300px"></img>
 </div>
 
-- Method 1: [Set up a `Qwen Code`-based agent](../../wiki/coding-agents.md#set-up-qwen-code-based-agent).
-- Method 2: [Choose another coding agent](../../wiki/coding-agents.md#choose-a-coding-agent).
+- Method 1: [Set up a `Qwen Code`-based agent](../../wiki/coding-agents.md#set-up-qwen-code).
+- Method 2: [Choose another coding agent](../../wiki/coding-agents.md#choose-and-use-a-coding-agent).
 
 ### 1.17. Set up the autochecker
 

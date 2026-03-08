@@ -137,7 +137,7 @@ We refer to your fork as `fork` and to the original repo as `upstream` (выше
 
    > [!IMPORTANT]
    > The credentials must match your autochecker bot registration.
-   > If you haven't registered with the autochecker bot, see [step 1.7](#17-set-up-the-autochecker).
+   > If you haven't registered with the autochecker bot, see [step 1.7](#17-set-up-qwen-code).
 
 ### 1.4. Start the services locally (on your laptop)
 
