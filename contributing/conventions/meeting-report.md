@@ -23,6 +23,8 @@
   - [2.17. Off-topic digressions](#217-off-topic-digressions)
   - [2.18. Recurring meetings](#218-recurring-meetings)
 - [3. Instructions](#3-instructions)
+  - [3.1. Line-by-line pass](#31-line-by-line-pass)
+  - [3.2. Coverage check](#32-coverage-check)
 - [4. Sections](#4-sections)
   - [4.1. Table of contents](#41-table-of-contents)
   - [4.2. Metadata](#42-metadata)
@@ -37,7 +39,6 @@
   - [4.10. Questions and answers](#410-questions-and-answers)
   - [4.11. Discussions](#411-discussions)
   - [4.12. Glossary](#412-glossary)
-  - [4.13. Coverage check](#413-coverage-check)
 
 ## 1. File locations
 
@@ -149,7 +150,20 @@ If the transcript references a prior meeting or is clearly part of a series, not
 
 Write a comprehensive meeting report based on the provided transcript.
 
+### 3.1. Line-by-line pass
+
 Go through the transcript **line by line for substantive content** and make sure every point, detail, example, quote, and discussion is captured in the appropriate section. In the [Decisions](#47-decisions), [Q&A](#410-questions-and-answers), and [Discussions](#411-discussions) sections, do not summarize — expand. Include specific examples, analogies, and arguments that speakers used. If speakers disagreed or evolved their position during the discussion, capture that progression. If speakers outright contradicted each other without resolution, note the disagreement explicitly.
+
+### 3.2. Coverage check
+
+After completing the report, review the transcript one more time and verify:
+
+- Every speaker who contributed substantively is referenced at least once
+- Every topic transition in the transcript is accounted for in a section
+- No decisions were inferred — all are explicitly stated or agreed upon
+- Proposals and hypotheticals are in [Open questions](#48-open-questions), not [Decisions](#47-decisions)
+
+If any gaps are found, go back and fill them in. Do not include this checklist in the final report.
 
 ## 4. Sections
 
@@ -234,14 +248,3 @@ Extended conversations, off-topic digressions (tools, mentoring experiences, ind
 ### 4.12. Glossary
 
 If the meeting introduced, defined, or clarified any terms, acronyms, or project-specific jargon, include them here. Omit this section if no new terminology was introduced. Write each term as a subsection heading (e.g., `### Sprint Review`) followed by a prose paragraph with the definition. This makes each term individually referenceable via a Markdown anchor.
-
-### 4.13. Coverage check
-
-After completing the report, review the transcript one more time and verify:
-
-- Every speaker who contributed substantively is referenced at least once
-- Every topic transition in the transcript is accounted for in a section
-- No decisions were inferred — all are explicitly stated or agreed upon
-- Proposals and hypotheticals are in [Open questions](#48-open-questions), not [Decisions](#47-decisions)
-
-If any gaps are found, go back and fill them in. Do not include this checklist in the final report.
