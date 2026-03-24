@@ -6,15 +6,9 @@ Telegram bot for interacting with the LMS backend.
 
 ### 1. Setup environment
 
-```bash
-cp client-telegram-bot/.env.bot.example .env.bot.secret
-# Edit .env.bot.secret with your values
-```
-
-Required variables:
+All bot variables are set in `.env.docker.secret` (see [wiki/dotenv-docker-secret.md](../wiki/dotenv-docker-secret.md)):
 
 - `BOT_TOKEN` — Telegram bot token from @BotFather
-- `LMS_API_BASE_URL` — LMS backend URL (e.g., `http://localhost:42002`)
 - `LMS_API_KEY` — LMS API key
 - `LLM_API_KEY` — Qwen Code API key
 - `LLM_API_BASE_URL` — Qwen Code API base URL

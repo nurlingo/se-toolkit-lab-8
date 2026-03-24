@@ -21,7 +21,7 @@ This is called **separation of concerns** — the handler logic is separate from
 ```
 bot/
 ├── bot.py              # Entry point with --test mode and Telegram startup
-├── config.py           # Environment variable loading from .env.bot.secret
+├── config.py           # Environment variable loading from .env.docker.secret
 ├── handlers/
 │   ├── __init__.py
 │   ├── commands.py     # Slash command handlers (/start, /help, /health, etc.)
@@ -44,7 +44,7 @@ bot/
 - `bot/handlers/` directory with placeholder handlers
 - `bot/config.py` for environment loading
 - `client-telegram-bot/pyproject.toml` for dependencies
-- `.env.bot.secret` with required variables
+- `.env.docker.secret` with required variables
 
 **Key Design Decision:** The `--test` flag allows testing handlers without a Telegram connection. This is crucial for rapid development and CI/CD.
 
@@ -115,7 +115,7 @@ For each task:
 ## Deployment Checklist
 
 - [ ] Backend running on VM
-- [ ] `.env.bot.secret` exists with real values
+- [ ] `.env.docker.secret` has bot credentials (`BOT_TOKEN`, `LLM_API_KEY`)
 - [ ] `.env.docker.secret` updated with bot config
 - [ ] Bot service added to `docker-compose.yml`
 - [ ] `docker compose up -d` starts all services
