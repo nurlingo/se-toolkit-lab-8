@@ -1,5 +1,7 @@
 # Nanobot architecture
 
+> System-level context (container diagram, design decisions): [architecture.md](architecture.md)
+
 This directory contains the nanobot gateway deployment for the LMS — an AI assistant that connects to chat channels and answers questions using LLM reasoning and LMS backend data.
 
 ## Upstream dependency
@@ -19,8 +21,7 @@ nanobot/
 ├── config.json              # Gateway config (webchat channel + LMS MCP server)
 ├── entrypoint.py            # Injects runtime env vars into MCP configs, then execs gateway
 ├── pyproject.toml           # Dependencies + entry point registration
-├── Dockerfile               # Multi-stage build
-└── architecture.md          # This file
+└── Dockerfile               # Multi-stage build
 
 mcp/                         # Top-level MCP package (separate workspace member)
 ├── mcp_lms/                 # LMS backend — client + MCP tools
