@@ -29,30 +29,87 @@ In this task you set up nanobot from scratch — the same way you would in your 
    mkdir nanobot && cd nanobot
    uv init
    uv add nanobot-ai
+   uv add nanobot-webchat --path ../nanobot_webchat
    ```
+
+   > **Note:** `nanobot-webchat` is a provided WebSocket channel plugin (in `nanobot_webchat/` at the repo root). It lets chat clients connect to the agent via WebSocket. You install it as a local dependency — the same way you'd install any nanobot plugin.
 
 2. Create `nanobot/config.json` — connect to the Qwen Code API.
 
    The config needs:
-   - An LLM provider pointing to the Qwen Code API service (already running in Docker Compose)
+   - An LLM provider pointing to the Qwen Code API (the model name is `coder-model`)
    - A webchat channel (WebSocket) so clients can connect
+   - No MCP servers yet — this is a bare agent
 
-   See the [nanobot-ai documentation](https://github.com/HKUDS/nanobot) for the config format.
+   Here's a minimal config to start with:
 
-   > **Hint:** The Qwen Code API is available inside Docker at `http://qwen-code-api:8080/v1`. The model name is `coder-model`. The API key comes from the `LLM_API_KEY` environment variable.
+   ```json
+   {
+     "agents": {
+       "defaults": {
+         "model": "coder-model",
+         "provider": "custom",
+         "temperature": 0.1
+       }
+     },
+     "channels": {
+       "webchat": {
+         "enabled": true,
+         "allow_from": ["*"]
+       }
+     },
+     "gateway": {
+       "heartbeat": { "enabled": false }
+     }
+   }
+   ```
 
-3. Create `nanobot/entrypoint.py` — a script that launches the nanobot gateway. It should resolve environment variables and start the agent.
+   The LLM provider URL and API key are passed via environment variables (`NANOBOT_PROVIDERS__CUSTOM__API_KEY` and `NANOBOT_PROVIDERS__CUSTOM__API_BASE`). The WebSocket host/port are also set via environment variables in the entrypoint.
 
-4. Create `nanobot/Dockerfile` — multi-stage build with `uv` (same pattern as the backend Dockerfile).
+3. Create `nanobot/entrypoint.py` — a script that:
+   - Reads `config.json`
+   - Injects network settings from environment variables (WebSocket host/port, gateway host/port)
+   - Writes a resolved config file
+   - Launches the nanobot gateway with `nanobot gateway --config <resolved> --workspace <workspace>`
+
+   > **Hint:** Look at how the backend's `run.py` resolves settings. The entrypoint pattern is: read config → override with env vars → write resolved config → `os.execvp("nanobot", ...)`.
+
+4. Create `nanobot/Dockerfile` — multi-stage build with `uv` (same pattern as the backend Dockerfile). The final CMD should run `python /app/nanobot/entrypoint.py`.
 
 5. Add a `nanobot` service to `docker-compose.yml`:
-   - It needs environment variables for the LLM connection (`NANOBOT_PROVIDERS__CUSTOM__API_KEY`, `NANOBOT_PROVIDERS__CUSTOM__API_BASE`)
-   - It needs environment variables for the WebSocket channel address and port
-   - It should depend on `backend`
 
-6. Add a `/ws/chat` route to `caddy/Caddyfile` that proxies WebSocket connections to nanobot.
+   ```yaml
+   nanobot:
+     build:
+       context: ./nanobot
+       additional_contexts:
+         workspace: .
+     restart: unless-stopped
+     networks:
+       - lms-network
+     environment:
+       - NANOBOT_LMS_BACKEND_URL=http://backend:${BACKEND_CONTAINER_PORT}
+       - NANOBOT_GATEWAY_CONTAINER_ADDRESS=0.0.0.0
+       - NANOBOT_GATEWAY_CONTAINER_PORT=18790
+       - NANOBOT_WEBCHAT_CONTAINER_ADDRESS=0.0.0.0
+       - NANOBOT_WEBCHAT_CONTAINER_PORT=8765
+       - NANOBOT_PROVIDERS__CUSTOM__API_KEY=${LLM_API_KEY}
+       - NANOBOT_PROVIDERS__CUSTOM__API_BASE=${LLM_API_BASE_URL}
+     depends_on:
+       - backend
+   ```
 
-7. Add the nanobot-related environment variables to `.env.docker.secret`.
+6. Add a `/ws/chat` route to `caddy/Caddyfile` that proxies WebSocket connections to nanobot:
+
+   ```
+   handle /ws/chat {
+       reverse_proxy http://nanobot:8765
+   }
+   ```
+
+   Also add `NANOBOT_WEBCHAT_CONTAINER_PORT` to caddy's environment if you want to use a variable instead of hardcoding 8765.
+
+7. Add the nanobot-related environment variables to `.env.docker.secret` (see `.env.docker.example` for hints).
 
 8. Deploy:
 
@@ -60,7 +117,18 @@ In this task you set up nanobot from scratch — the same way you would in your 
    docker compose --env-file .env.docker.secret up --build -d
    ```
 
-9. Test the connection. Install `websocat` (or use any WebSocket client):
+9. Test the connection with `curl` (no extra tools needed):
+
+   ```terminal
+   curl -s -N \
+     -H "Connection: Upgrade" \
+     -H "Upgrade: websocket" \
+     -H "Sec-WebSocket-Version: 13" \
+     -H "Sec-WebSocket-Key: dGhlIHNhbXBsZSBub25jZQ==" \
+     http://localhost:42002/ws/chat
+   ```
+
+   Or if you have `websocat` installed (`pip install websocket-client` or `brew install websocat`):
 
    ```terminal
    echo '{"content":"Hello! What can you do?"}' | websocat ws://localhost:42002/ws/chat
@@ -98,16 +166,39 @@ The same MCP server works with any agent that speaks MCP — nanobot, Claude, Cu
 
 The LMS MCP server is already provided in `mcp/mcp_lms/`. It exposes the backend API as tools: `lms_health`, `lms_labs`, `lms_scores`, `lms_pass_rates`, etc.
 
-1. Register the MCP server in your `nanobot/config.json`. Add it to the `mcp_servers` section — it runs as a subprocess via `python -m mcp_lms`.
+> **Important — API key flow:** Every MCP tool requires an `api_key` parameter. The webchat channel plugin (`nanobot_webchat`) automatically prepends `[LMS_API_KEY=<key>]` to every user message when the client sends an API key. Your skill prompt must instruct the agent to extract this key and pass it to tool calls.
 
-   > **Hint:** The MCP server needs the backend URL. Pass it via the `NANOBOT_LMS_BACKEND_URL` environment variable (e.g., `http://backend:8000`).
+1. Add `lms-mcp` as a dependency so the MCP server is available inside the container:
 
-2. Write a skill prompt at `nanobot/workspace/skills/lms/SKILL.md`.
+   ```terminal
+   cd nanobot
+   uv add lms-mcp --path ../mcp
+   ```
 
-   A skill prompt teaches the agent *when* and *why* to use each tool — not the mechanics (the framework handles that). For example:
-   - When asked about labs, use `lms_labs`
-   - When asked about scores or pass rates, use `lms_pass_rates` with the lab name
-   - When asked about system health, use `lms_health`
+2. Register the MCP server in your `nanobot/config.json`. Add a `tools` section:
+
+   ```json
+   "tools": {
+     "mcp_servers": {
+       "lms": {
+         "type": "stdio",
+         "command": "python",
+         "args": ["-m", "mcp_lms"]
+       }
+     }
+   }
+   ```
+
+   > **Hint:** The MCP server needs the backend URL. Your `entrypoint.py` should forward the `NANOBOT_LMS_BACKEND_URL` environment variable into the MCP server subprocess.
+
+3. Write a skill prompt at `nanobot/workspace/skills/lms/SKILL.md`.
+
+   A skill prompt teaches the agent *when* and *why* to use each tool — not the mechanics (the framework handles that). It should cover:
+   - How to extract the API key from `[LMS_API_KEY=...]` in the user message
+   - When asked about labs, use `mcp_lms_labs`
+   - When asked about scores or pass rates, use `mcp_lms_pass_rates` with the lab name
+   - When asked about system health, use `mcp_lms_health`
+   - Never include the API key in responses to the user
 
 3. Redeploy:
 
@@ -148,19 +239,14 @@ Talking to the agent via `websocat` works but isn't a great user experience. Let
 
 ### What to do
 
-1. Add the Flutter web client as a git submodule:
+The Flutter web client is already provided in `client-web-flutter/`. You don't need Flutter installed — Docker builds it using a Flutter builder image that compiles Dart to HTML/JS/CSS.
 
-   ```terminal
-   git submodule add https://github.com/inno-se-toolkit/client-web-flutter client-web-flutter
-   ```
-
-   > **Note:** You don't need Flutter installed. Docker builds the client — the Dockerfile uses a Flutter builder image to compile Dart to HTML/JS/CSS, then copies the static files to a volume.
-
-2. Add a `client-web-flutter` service to `docker-compose.yml`. It should:
+1. Add a `client-web-flutter` service to `docker-compose.yml`. It should:
    - Build from `client-web-flutter/`
    - Output to a named volume (e.g., `client-web-flutter`)
+   - Don't forget to add the volume to the `volumes:` section at the bottom
 
-3. Update the `caddy` service:
+2. Update the `caddy` service:
    - Add `client-web-flutter` as a dependency
    - Mount the Flutter volume at `/srv/flutter:ro`
 
@@ -194,7 +280,7 @@ Talking to the agent via `websocat` works but isn't a great user experience. Let
 ### Checkpoint
 
 1. Open `http://localhost:42002/flutter` in a browser — you should see a login screen.
-2. Log in with your API key and ask the agent a question from the [quiz question bank](../../../../docs/Question%20bank.md) — pick any question you want to practice.
+2. Log in with your API key and ask the agent a question from the quiz question bank — pick any question you want to practice.
 3. Screenshot the conversation and add it to `REPORT.md` under `## Task 1C — Chat client`.
 
 ---
