@@ -5,8 +5,8 @@ def main():
     with open("./config.json") as f:
         config = json.load(f)
 
-    config["providers"]["custom"]["apiKey"] = os.environ.get("NANOBOT_LLM_API_KEY", "")
-    config["providers"]["custom"]["apiBase"] = os.environ.get("NANOBOT_LLM_BASE_URL", "")
+    config["providers"]["custom"]["apiKey"] = os.environ.get("LLM_API_KEY", os.environ.get("NANOBOT_LLM_API_KEY", ""))
+    config["providers"]["custom"]["apiBase"] = os.environ.get("LLM_API_BASE_URL", os.environ.get("NANOBOT_LLM_BASE_URL", ""))
     config["gateway"]["host"] = os.environ.get("NANOBOT_GATEWAY_HOST", "0.0.0.0")
     config["gateway"]["port"] = int(os.environ.get("NANOBOT_GATEWAY_PORT", "18790"))
 
