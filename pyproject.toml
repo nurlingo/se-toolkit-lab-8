@@ -5,6 +5,7 @@ members = [
     "qwen-code-api",
     "nanobot",
     "nanobot-websocket-channel",
+    "mcp_observability",
 ]
 
 [tool.uv.sources]

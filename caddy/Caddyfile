@@ -31,7 +31,7 @@
         reverse_proxy http://backend:{$BACKEND_CONTAINER_PORT}
     }
     handle /ws/chat {
-    #     reverse_proxy http://nanobot:{$NANOBOT_WEBCHAT_CONTAINER_PORT}
+        reverse_proxy http://nanobot:{$NANOBOT_WEBCHAT_CONTAINER_PORT}
     }
     handle /utils/pgadmin* {
         reverse_proxy http://pgadmin:{$CONST_PGADMIN_CONTAINER_PORT}
@@ -49,9 +49,9 @@
         reverse_proxy http://backend:{$BACKEND_CONTAINER_PORT}
     }
     handle_path /flutter* {
-    #     root * /srv/flutter
-    #     try_files {path} /index.html
-    #     file_server
+        root * /srv/flutter
+        try_files {path} /index.html
+        file_server
     }
     handle {
         root * /srv/react

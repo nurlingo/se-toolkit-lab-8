@@ -6,6 +6,7 @@ requires-python = "==3.14.2"
 members = [
     "lms-backend",
     "lms-mcp",
+    "mcp-observability",
     "nanobot",
     "nanobot-webchat",
     "qwen-code-api",
@@ -1074,6 +1075,17 @@ wheels = [
 ]
 
 [[package]]
+name = "mcp-observability"
+version = "1.0.0"
+source = { editable = "mcp_observability" }
+dependencies = [
+    { name = "mcp" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "mcp", specifier = ">=1.26.0,<2.0.0" }]
+
+[[package]]
 name = "mdurl"
 version = "0.1.2"
 source = { registry = "https://pypi.org/simple" }
@@ -1159,6 +1171,7 @@ version = "0.1.0"
 source = { virtual = "nanobot" }
 dependencies = [
     { name = "lms-mcp" },
+    { name = "mcp-observability" },
     { name = "nanobot-ai" },
     { name = "nanobot-webchat" },
 ]
@@ -1166,6 +1179,7 @@ dependencies = [
 [package.metadata]
 requires-dist = [
     { name = "lms-mcp", editable = "mcp" },
+    { name = "mcp-observability", editable = "mcp_observability" },
     { name = "nanobot-ai", specifier = ">=0.1.4.post5" },
     { name = "nanobot-webchat", editable = "nanobot-websocket-channel" },
 ]
