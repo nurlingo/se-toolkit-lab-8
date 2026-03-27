@@ -47,6 +47,12 @@ We refer to your fork as `fork` and to the original repo as `upstream`.
 
 1. [Protect a branch](../../wiki/github.md#protect-a-branch).
 
+#### 1.1.6. Sync your fork with upstream
+
+1. [Sync your fork](../../wiki/github.md#sync-a-fork) so you have the latest changes from the course repository.
+
+   Do this **before cloning** to the VM, and again whenever the instructors push updates.
+
 ### 1.2. SSH into your VM and set up the environment there
 
 1. [Connect to your VM](../../wiki/vm-access.md#connect-to-the-vm-as-the-user-user-local).

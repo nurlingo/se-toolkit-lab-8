@@ -9,7 +9,7 @@
 > Set it up from scratch. Wire it into the system. Then extend it with observability tools so it can answer questions about system health too.
 
 > [!IMPORTANT]
-> Do this lab on your VM. SSH into it directly or through `VS Code` Remote-SSH. Do not install or run `nanobot` on your main machine.
+> Do the whole lab on your **VM**. You can work through a plain SSH shell or through `VS Code` Remote-SSH. When this guide says `localhost`, it means the VM itself or a forwarded port from that VM. Do not install or run `nanobot` on your main machine.
 
 ## What you will learn
 
@@ -24,9 +24,9 @@ By the end of this lab, you should be able to say:
 
 ## Architecture
 
-High level: by the end of the lab, the system looks like this.
+By the end of the lab, the system looks like this.
 
-This is different from Lab 7. There, you built one client around your own LLM loop. Here, the agent becomes a shared system layer that multiple clients can talk to, and that layer can use reusable tools, memory, and scheduled actions.
+In Lab 7 you built one client around your own LLM loop. Here, the agent becomes a shared system layer that multiple clients can talk to — and that layer has reusable tools, memory, and scheduled actions.
 
 ```
 [Browser]            [Telegram, optional]
@@ -46,14 +46,14 @@ This is different from Lab 7. There, you built one client around your own LLM lo
 ### What you start with
 
 - **LMS app**: the React dashboard, FastAPI backend, and PostgreSQL database.
-- **Platform services**: Caddy routes requests, and `qwen-code-api` gives your agent access to the LLM.
-- **Observability stack**: OpenTelemetry, VictoriaLogs, and VictoriaTraces already collect system telemetry.
+- **Platform services**: Caddy reverse-proxies all traffic, and the Qwen Code API gives your agent access to the LLM.
+- **Observability stack**: OpenTelemetry Collector, VictoriaLogs, and VictoriaTraces already collect system telemetry.
 
 ### What you add
 
-- **Nanobot agent**: a new interface to the LMS that can reason, use tools, and answer in natural language.
-- **Web chat access**: a WebSocket channel plus Flutter web client at `/flutter`, protected by `NANOBOT_ACCESS_KEY`.
-- **New agent abilities**: LMS MCP tools first, then observability tools, then a scheduled health-check job.
+- **Nanobot agent**: a natural-language interface to the LMS that can reason, call tools, and answer questions.
+- **Web chat client**: a WebSocket channel plus a Flutter web UI at `/flutter`, protected by `NANOBOT_ACCESS_KEY`.
+- **New agent capabilities**: LMS MCP tools first, then observability MCP tools, then a scheduled health-check job.
 
 ## Tasks
 
@@ -68,7 +68,7 @@ This is different from Lab 7. There, you built one client around your own LLM lo
 1. [Set Up the Agent](./lab/tasks/required/task-1.md) — install nanobot, configure Qwen API, add MCP tools, write skill prompt
 2. [Deploy and Connect a Web Client](./lab/tasks/required/task-2.md) — Dockerize nanobot, add WebSocket channel + Flutter chat UI
 3. [Give the Agent New Eyes](./lab/tasks/required/task-3.md) — explore observability data, write log/trace MCP tools
-4. [Diagnose a Failure and Make the Agent Proactive](./lab/tasks/required/task-4.md) — one-shot investigation, in-chat cron health checks, fix the bug
+4. [Diagnose a Failure and Make the Agent Proactive](./lab/tasks/required/task-4.md) — investigate a failure, schedule in-chat health checks, fix a planted bug
 
 ### Optional
 
