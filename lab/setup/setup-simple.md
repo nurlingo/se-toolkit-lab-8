@@ -64,6 +64,21 @@ We refer to your fork as `fork` and to the original repo as `upstream`.
    > [!NOTE]
    > The `--recurse-submodules` flag clones the Qwen Code API [submodule](../../wiki/git.md#submodule) included in the repository.
 
+   > [!IMPORTANT]
+   > You will need to `git push` from the VM. If you use **VS Code Remote-SSH**, git credentials are forwarded automatically from your local machine. If you use a **plain SSH shell**, set up authentication on the VM:
+   >
+   > **Option A** — Clone with SSH instead of HTTPS:
+   > ```
+   > git clone --recurse-submodules git@github.com:YOUR_GITHUB_USERNAME/se-toolkit-lab-8.git
+   > ```
+   > This requires your VM's SSH key added to your [GitHub SSH keys](https://github.com/settings/keys).
+   >
+   > **Option B** — Use a GitHub personal access token for HTTPS:
+   > ```
+   > git remote set-url origin https://YOUR_TOKEN@github.com/YOUR_GITHUB_USERNAME/se-toolkit-lab-8.git
+   > ```
+   > Create a token at <https://github.com/settings/tokens> with `repo` scope.
+
 3. Go into the repository and install `Python` dependencies:
 
    ```terminal
