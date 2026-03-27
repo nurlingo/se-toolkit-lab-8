@@ -38,18 +38,6 @@
           "NANOBOT_LMS_BACKEND_URL": "http://localhost:42002",
           "NANOBOT_LMS_API_KEY": "test-api-key-123"
         }
-      },
-      "observability": {
-        "type": "stdio",
-        "command": "python",
-        "args": [
-          "-m",
-          "mcp_observability"
-        ],
-        "env": {
-          "VICTORIALOGS_URL": "http://localhost:42010",
-          "VICTORIATRACES_URL": "http://localhost:42011"
-        }
       }
     }
   }

@@ -6,6 +6,7 @@ WORKDIR /app
 COPY --from=workspace pyproject.toml /app/pyproject.toml
 COPY --from=workspace mcp/ /app/mcp/
 COPY --from=workspace nanobot-websocket-channel/ /app/nanobot-websocket-channel/
+COPY --from=workspace mcp_observability/ /app/mcp_observability/
 COPY . /app/nanobot/
 RUN uv sync --no-dev --package nanobot
 

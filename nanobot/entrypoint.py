@@ -25,6 +25,12 @@ def main():
         env["NANOBOT_LMS_BACKEND_URL"] = os.environ.get("NANOBOT_LMS_BACKEND_URL", "http://backend:8000")
         env["NANOBOT_LMS_API_KEY"] = os.environ.get("NANOBOT_LMS_API_KEY", "")
 
+    # MCP tools — Observability (VictoriaLogs + VictoriaTraces)
+    if "observability" in mcp:
+        env = mcp["observability"].setdefault("env", {})
+        env["VICTORIALOGS_URL"] = os.environ.get("VICTORIALOGS_URL", "http://victorialogs:9428")
+        env["VICTORIATRACES_URL"] = os.environ.get("VICTORIATRACES_URL", "http://victoriatraces:10428")
+
     with open("./config.resolved.json", "w") as f:
         json.dump(config, f, indent=2)
 

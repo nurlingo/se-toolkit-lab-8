@@ -186,6 +186,100 @@ _register(
 )
 
 
+
+
+# ---------------------------------------------------------------------------
+# Observability tools (VictoriaLogs + VictoriaTraces)
+# ---------------------------------------------------------------------------
+
+import urllib.parse
+import urllib.request as _urllib_request
+
+_vlogs_url = os.environ.get("VICTORIALOGS_URL", "http://victorialogs:9428")
+_vtraces_url = os.environ.get("VICTORIATRACES_URL", "http://victoriatraces:10428")
+
+
+class _LogsSearchQuery(BaseModel):
+    query: str = Field(default="*", description="LogsQL query string.")
+    limit: int = Field(default=10, ge=1, description="Max log entries to return.")
+    time_window_minutes: int = Field(default=60, description="Look back N minutes.")
+
+
+class _LogsErrorCountQuery(BaseModel):
+    time_window_minutes: int = Field(default=60, description="Look back N minutes.")
+
+
+class _TracesListQuery(BaseModel):
+    service: str = Field(default="Learning Management Service", description="Service name.")
+    limit: int = Field(default=5, ge=1, description="Max traces to return.")
+
+
+class _TraceGetQuery(BaseModel):
+    trace_id: str = Field(description="Trace ID to fetch.")
+
+
+async def _logs_search(args: _LogsSearchQuery) -> list[TextContent]:
+    url = f"{_vlogs_url}/select/logsql/query?query={urllib.parse.quote(args.query)}&limit={args.limit}&start=-{args.time_window_minutes}m"
+    try:
+        resp = _urllib_request.urlopen(url, timeout=10).read().decode()
+        lines = [l for l in resp.strip().split("\n") if l]
+        results = []
+        for line in lines[:args.limit]:
+            try:
+                entry = json.loads(line)
+                results.append({"time": entry.get("_time", ""), "message": entry.get("_msg", ""), "level": entry.get("severity", ""), "trace_id": entry.get("otelTraceID", "")})
+            except Exception:
+                results.append({"raw": line[:200]})
+        return [TextContent(type="text", text=json.dumps(results, indent=2) if results else "No logs found.")]
+    except Exception as e:
+        return [TextContent(type="text", text=f"Error querying logs: {e}")]
+
+
+async def _logs_error_count(args: _LogsErrorCountQuery) -> list[TextContent]:
+    url = f"{_vlogs_url}/select/logsql/query?query=severity:ERROR OR status:5*&limit=200&start=-{args.time_window_minutes}m"
+    try:
+        resp = _urllib_request.urlopen(url, timeout=10).read().decode()
+        lines = [l for l in resp.strip().split("\n") if l]
+        return [TextContent(type="text", text=json.dumps({"error_count": len(lines), "time_window_minutes": args.time_window_minutes}))]
+    except Exception as e:
+        return [TextContent(type="text", text=f"Error: {e}")]
+
+
+async def _traces_list(args: _TracesListQuery) -> list[TextContent]:
+    url = f"{_vtraces_url}/select/jaeger/api/traces?service={urllib.parse.quote(args.service)}&limit={args.limit}&lookback=1h"
+    try:
+        resp = json.loads(_urllib_request.urlopen(url, timeout=10).read().decode())
+        traces = resp.get("data", [])
+        results = []
+        for t in traces:
+            spans = t.get("spans", [])
+            if spans:
+                root = spans[0]
+                results.append({"trace_id": root.get("traceID", ""), "operation": root.get("operationName", ""), "duration_us": root.get("duration", 0), "span_count": len(spans)})
+        return [TextContent(type="text", text=json.dumps(results, indent=2) if results else "No traces found.")]
+    except Exception as e:
+        return [TextContent(type="text", text=f"Error: {e}")]
+
+
+async def _traces_get(args: _TraceGetQuery) -> list[TextContent]:
+    url = f"{_vtraces_url}/select/jaeger/api/traces/{args.trace_id}"
+    try:
+        resp = json.loads(_urllib_request.urlopen(url, timeout=10).read().decode())
+        traces = resp.get("data", [])
+        if not traces:
+            return [TextContent(type="text", text=f"Trace {args.trace_id} not found.")]
+        spans = traces[0].get("spans", [])
+        results = [{"operation": s.get("operationName", ""), "duration_us": s.get("duration", 0), "tags": {t["key"]: t["value"] for t in s.get("tags", []) if t["key"] in ("http.method", "http.status_code", "error")}} for s in spans]
+        return [TextContent(type="text", text=json.dumps(results, indent=2))]
+    except Exception as e:
+        return [TextContent(type="text", text=f"Error: {e}")]
+
+_register("logs_search", "Search backend logs in VictoriaLogs using LogsQL.", _LogsSearchQuery, _logs_search)
+_register("logs_error_count", "Count error-level log entries in the last N minutes.", _LogsErrorCountQuery, _logs_error_count)
+_register("traces_list", "List recent traces from VictoriaTraces.", _TracesListQuery, _traces_list)
+_register("traces_get", "Fetch a specific trace by ID with all spans.", _TraceGetQuery, _traces_get)
+
+
 # ---------------------------------------------------------------------------
 # MCP handlers
 # ---------------------------------------------------------------------------
